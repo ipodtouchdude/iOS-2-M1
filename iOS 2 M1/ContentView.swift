@@ -76,6 +76,7 @@ struct ContentView: View {
             Button("Create") {
                 if appString == "" || dirString == "" || nameString == "" {
                     self.showingAlert = true
+                    self.completedAlert = false
                 }
                 else {
                     let docURL = URL(string: dirString.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!)!
@@ -98,13 +99,19 @@ struct ContentView: View {
                         } catch {
                             print(error.localizedDescription);
                         }
+                        self.showingAlert = true
                         self.completedAlert = true
                     }
                 }
-            }.alert(isPresented: $showingAlert) {
-                Alert(title: Text("Warning!"), message: Text("Make sure all text boxes are filled!"), dismissButton: .default(Text("OK")))
-            }.alert(isPresented: $completedAlert) {
-                Alert(title: Text("Completed!"), message: Text("You can now open your app at:\n \(dirString)/\(nameString).app\n\nPlease note that the app may show the prohibited symbol over app icon. This will be removed once macOS updates the directory.\n\nIf the app fails to open, please make sure it is signed correctly and some apps may not even work due to macOS limitation and would need the developer to update the app."), dismissButton: .default(Text("OK")))
+            }
+            .alert(isPresented: $showingAlert) {
+                if completedAlert == true {
+                    return Alert(title: Text("Completed!"), message: Text("You can now open your app at:\n \(dirString)/\(nameString).app\n\nPlease note that the app may show the prohibited symbol over app icon. This will be removed once macOS updates the directory.\n\nIf the app fails to open, please make sure it is signed correctly and some apps may not even work due to macOS limitation and would need the developer to update the app."), dismissButton: .default(Text("OK")))
+                    
+                }
+                else {
+                    return Alert(title: Text("Warning!"), message: Text("Make sure all text boxes are filled!"), dismissButton: .default(Text("OK")))
+                }
             }
             Spacer()
                 .frame(width: 600.0, height: 9.0)

@@ -37,6 +37,18 @@ struct ContentView: View {
                         if result.rawValue == NSApplication.ModalResponse.OK.rawValue {
                             let selectedPath = openPanel.url!.path
                             appString = selectedPath
+                            if FileManager.default.fileExists(atPath: "\(appString)/Info.plist") {
+                                let soundsData = try! Data(contentsOf: URL(fileURLWithPath: "\(appString)/Info.plist"))
+                                let myPlist = try! PropertyListSerialization.propertyList(from: soundsData, options: [], format: nil) as? [String : Any]
+                                if myPlist!["CFBundleDisplayName"] != nil {
+                                    nameString = myPlist!["CFBundleDisplayName"]! as! String
+                                }
+                                else {
+                                    nameString = myPlist!["CFBundleName"]! as! String
+                                }
+                            }
+                            else {
+                            }
                         }
                     }
                 }
